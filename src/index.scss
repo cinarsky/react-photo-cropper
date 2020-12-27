@@ -1,0 +1,44 @@
+.react-photo-cropper{
+  .cropper{
+    border: 1px solid black;
+    border-radius: 10px;
+    width: fit-content;
+    height: fit-content;
+    &:hover{
+      border: 1px dashed black;
+    }
+    &-label{
+      display: block;
+      text-align: center;
+      padding: 20px;
+      cursor: pointer;
+      &-icon{
+        display: block;
+        width: fit-content;
+        margin: 10px auto;
+      }
+      &-input{
+        display: none;
+      }
+    }
+  }
+
+  &-dialog{
+    width: fit-content !important;
+    user-select:none;
+    &-content{
+      position: relative;
+      .cropper-box{
+        &-img{
+          border: 2px solid greenyellow;
+        }
+        &-cutter{
+          position: absolute;
+          width: 50px;
+          height: 30px;
+          border: 1px solid black;
+        }
+      }
+    }
+  }
+}
