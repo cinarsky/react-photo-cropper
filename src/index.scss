@@ -1,4 +1,5 @@
 .react-photo-cropper{
+  box-sizing: content-box !important;
   .cropper{
     border: 1px solid black;
     border-radius: 10px;
@@ -38,8 +39,6 @@
           outline-color: rgba(0,0,0,0.6);
           cursor: cell;
           position: absolute;
-          width: 100px;
-          height: 100px;
           border: 2px dashed blueviolet;
           &-content{
             width: 100%;

@@ -6,11 +6,14 @@ class ReactPhotoCropper extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      width: props.width,
+      height: props.height,
+      imgMinWidth: props.imgMinWidth || 80,
+      imgMinHeight: props.imgMinHeight || 90,
       resetInput: true,
       currentImg: '',
       currentImgUrl: '',
-      edge: 20
-      // visible: !false
+      edge: 20,
     }
   }
   imgChange = (e) => {
@@ -33,7 +36,7 @@ class ReactPhotoCropper extends Component {
         this.cropperBoxContentRef = document.getElementById('cropper-box-cutter-content')
         this.cropperContentRef.addEventListener('mousedown', this.handleContentMouseDown)
         // this.cropperImgRef.addEventListener('mousemove', this.handleImgMouseMove)
-        this.cropperBoxContentRef.addEventListener('mousedown', this.handleMouseDown)
+        // this.cropperBoxContentRef.addEventListener('mousedown', this.handleMouseDown)
       })
     }
     reader.readAsArrayBuffer(e.target.files[0]);
@@ -41,10 +44,14 @@ class ReactPhotoCropper extends Component {
   handleImgMouseMove = (e) => {
     e.preventDefault()
   }
+  //确定点击目标，对应绑定
   handleContentMouseDown = (e) => {
     // console.log(1,e.layerX, e.layerY);
     console.log(e, e.layerX, e.layerY);
     if (e.target === this.cropperBoxRef) {
+      console.log(123);
+      this.cropperContentRef.addEventListener('mousemove', this.handleContentMouseMove)
+      this.cropperContentRef.addEventListener('mouseup', this.handleContentMouseUp)
       const { edge } = this.state
       const cutterOriginX = this.cropperBoxRef.getBoundingClientRect().left
       const cutterOriginY = this.cropperBoxRef.getBoundingClientRect().top
@@ -103,15 +110,31 @@ class ReactPhotoCropper extends Component {
           mode: 'top'
         })
       }
+    } else if (e.target === this.cropperBoxContentRef) {
 
-      this.cropperContentRef.addEventListener('mousemove', this.handleContentMouseMove)
-      this.cropperContentRef.addEventListener('mouseup', this.handleContentMouseUp)
+      const pointerX = e.clientX
+      const pointerY = e.clientY
+
+      let left = Number((this.cropperBoxRef.style.left || '0px').split('px')[0])
+      let top = Number((this.cropperBoxRef.style.top || '0px').split('px')[0])
+      this.setState({
+        mode: 'inside',
+        pointerX,
+        pointerY,
+        left,
+        top
+      })
+
+      this.cropperContentRef.addEventListener('mousemove', this.handleMouseMove)
+      this.cropperContentRef.addEventListener('mouseup', this.handleMouseUp)
     }
+
     e.preventDefault()
   }
   //裁剪框边缘拖拽逻辑
   handleContentMouseMove = (e) => {
-    const { mode } = this.state
+    console.log(2);
+    const { mode, imgMinWidth, imgMinHeight } = this.state
     const cutterOriginX = this.cropperBoxRef.getBoundingClientRect().left
     const cutterOriginY = this.cropperBoxRef.getBoundingClientRect().top
     const pointerX = e.clientX
@@ -123,33 +146,89 @@ class ReactPhotoCropper extends Component {
     let left = Number((this.cropperBoxRef.style.left || '0px').split('px')[0])
 
 
-    console.log(distanceX, distanceY, this.cropperBoxRef.style.top);
+    console.log(imgMinWidth, imgMinHeight);
     if (mode === 'right-bottom') {
-      this.cropperBoxRef.style.width = `${distanceX}px`
-      this.cropperBoxRef.style.height = `${distanceY}px`
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+        this.cropperBoxRef.style.width = `${imgMinWidth}px`
+      } else {
+        this.cropperBoxRef.style.width = `${distanceX}px`
+      }
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.height = `${distanceY}px`
+      }
     } else if (mode === 'right') {
-      this.cropperBoxRef.style.width = `${distanceX}px`
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+      } else {
+        this.cropperBoxRef.style.width = `${distanceX}px`
+      }
     } else if (mode === 'right-top') {
-      this.cropperBoxRef.style.top = `${top + distanceY}px`
-      this.cropperBoxRef.style.width = `${distanceX}px`
-      this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+
+        this.cropperBoxRef.style.width = `${imgMinWidth}px`
+      } else {
+        this.cropperBoxRef.style.width = `${distanceX}px`
+      }
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.top = `${top + distanceY}px`
+        this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      }
     } else if (mode === 'bottom') {
-      this.cropperBoxRef.style.height = `${distanceY}px`
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.height = `${distanceY}px`
+      }
     } else if (mode === 'left-bottom') {
-      this.cropperBoxRef.style.left = `${left + distanceX}px`
-      this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
-      this.cropperBoxRef.style.height = `${distanceY}px`
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+
+        this.cropperBoxRef.style.width = `${imgMinWidth}px`
+      } else {
+        this.cropperBoxRef.style.left = `${left + distanceX}px`
+        this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
+      }
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.height = `${distanceY}px`
+      }
     } else if (mode === 'left') {
-      this.cropperBoxRef.style.left = `${left + distanceX}px`
-      this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+
+        this.cropperBoxRef.style.width = `${imgMinWidth}px`
+      } else {
+        this.cropperBoxRef.style.left = `${left + distanceX}px`
+        this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
+      }
     } else if (mode === 'left-top') {
-      this.cropperBoxRef.style.top = `${top + distanceY}px`
-      this.cropperBoxRef.style.left = `${left + distanceX}px`
-      this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
-      this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.top = `${top + distanceY}px`
+        this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      }
+      if (this.cropperBoxRef.offsetWidth < imgMinWidth) {
+
+        this.cropperBoxRef.style.width = `${imgMinWidth}px`
+      } else {
+        this.cropperBoxRef.style.left = `${left + distanceX}px`
+        this.cropperBoxRef.style.width = `${this.cropperBoxRef.offsetWidth - distanceX}px`
+      }
     } else if (mode === 'top') {
-      this.cropperBoxRef.style.top = `${top + distanceY}px`
-      this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      if (this.cropperBoxRef.offsetHeight < imgMinHeight) {
+
+        this.cropperBoxRef.style.height = `${imgMinHeight}px`
+      } else {
+        this.cropperBoxRef.style.top = `${top + distanceY}px`
+        this.cropperBoxRef.style.height = `${this.cropperBoxRef.offsetHeight - distanceY}px`
+      }
     }
 
 
@@ -163,7 +242,7 @@ class ReactPhotoCropper extends Component {
       mode: ''
     })
   }
-  //裁剪框开始内部拖拽逻辑
+  // 裁剪框开始内部拖拽逻辑
   handleMouseDown = (e) => {
     if (e.target === this.cropperBoxRef) {
       return
@@ -178,45 +257,63 @@ class ReactPhotoCropper extends Component {
   }
   //裁剪框内部拖拽逻辑
   handleMouseMove = (e) => {
-    const { pointerX, pointerY } = this.state
-    let left = Number((this.cropperBoxRef.style.left || '0px').split('px')[0])
-    let top = Number((this.cropperBoxRef.style.top || '0px').split('px')[0])
-    left = e.offsetX - pointerX + left
-    top = e.offsetY - pointerY + top
+
+    let { pointerX, pointerY, mode, left, top } = this.state
+    if (mode !== 'inside') { return }
+    const pointerXM = e.clientX
+    const pointerYM = e.clientY
+
+    console.log(left);
+    left = pointerXM - pointerX + left
+    top = pointerYM - pointerY + top
+    console.log(pointerXM, pointerX, pointerXM - pointerX, left);
     left = left < 0 ? 0 : left
     top = top < 0 ? 0 : top
-    left = left > 400 - this.cropperBoxRef.offsetWidth ? 400 - this.cropperBoxRef.offsetWidth : left
+    left = left > this.cropperImgRef.offsetWidth - this.cropperBoxRef.offsetWidth ? this.cropperImgRef.offsetWidth - this.cropperBoxRef.offsetWidth : left
     top = top > this.cropperImgRef.offsetHeight - this.cropperBoxRef.offsetHeight - 1 ? this.cropperImgRef.offsetHeight - this.cropperBoxRef.offsetHeight - 1 : top
+
     this.cropperBoxRef.style.left = `${left}px`
     this.cropperBoxRef.style.top = `${top}px`
     e.preventDefault()
   }
   //裁剪框结束内部拖拽逻辑
   handleMouseUp = (e) => {
-    this.cropperBoxContentRef.removeEventListener('mousemove', this.handleMouseMove)
-    this.cropperBoxContentRef.removeEventListener('mouseup', this.handleMouseUp)
+    this.cropperContentRef.removeEventListener('mousemove', this.handleMouseMove)
+    this.cropperContentRef.removeEventListener('mouseup', this.handleMouseUp)
   }
 
   closeDialog = () => {
     this.cropperContentRef.removeEventListener('mousedown', this.handleContentMouseDown)
-    // this.cropperImgRef.removeEventListener('mousemove', this.handleImgMouseMove)
     this.cropperBoxContentRef.removeEventListener('mousedown', this.handleMouseDown)
     const originX = this.cropperBoxContentRef.getBoundingClientRect().left - this.cropperContentRef.getBoundingClientRect().left
     const originY = this.cropperBoxContentRef.getBoundingClientRect().top - this.cropperContentRef.getBoundingClientRect().top
-    
 
-    console.log('左上',originX,originY);
-    console.log('右上',originX+this.cropperBoxContentRef.offsetWidth,originY);
-    console.log('右下',originX+this.cropperBoxContentRef.offsetWidth,originY+this.cropperBoxContentRef.offsetHeight);
-    console.log('左下',originX,originY+this.cropperBoxContentRef.offsetHeight);
+    const { currentImgUrl } = this.state
+    const canvas = document.createElement("canvas"); //创建一个canvas节点
+    const ctx = canvas.getContext("2d");
+    const img = new Image();
+    img.src = currentImgUrl
+    img.onload = () => {
+      // 缩小倍数
+      const rateX = this.cropperImgRef.offsetWidth / img.width
+      const rateY = this.cropperImgRef.offsetHeight / img.height
+      canvas.width = this.cropperBoxContentRef.offsetWidth / rateX
+      canvas.height = this.cropperBoxContentRef.offsetHeight / rateY
 
-    this.setState({
-      visible: false
-    })
+      ctx.drawImage(img, originX / rateX, originY / rateY, this.cropperBoxContentRef.offsetWidth / rateX, this.cropperBoxContentRef.offsetHeight / rateY, 0, 0, this.cropperBoxContentRef.offsetWidth / rateX, this.cropperBoxContentRef.offsetHeight / rateY);
+      canvas.toBlob(blob => {
+        console.log(blob, window.open(URL.createObjectURL(blob)));
+      })
+    }
+
+
+    // this.setState({
+    // visible: false
+    // })
   }
 
   render() {
-    const { resetInput, visible, currentImgUrl } = this.state
+    const { resetInput, visible, currentImgUrl, width, height } = this.state
     return (
       <div className="react-photo-cropper">
         <div className='cropper'>
@@ -243,15 +340,18 @@ class ReactPhotoCropper extends Component {
               style={{
                 display: 'block',
                 margin: '0 auto',
-                width: '400px',
-                // height: '100px'
+                maxWidth: '800px',
+                width: width,
+                height: height
               }}
             />
             <div
               id='cropper-box-cutter'
               className='cropper-box-cutter'
               style={{
-                top: '10px'
+                top: '10px',
+                width: '100px',
+                height: '100px'
               }}
             >
               <div
