@@ -373,7 +373,7 @@ class ReactPhotoCropper extends Component {
   render() {
     const { resetInput, visible, currentImgUrl, width, height } = this.state
     return (
-      <div className="react-photo-cropper">
+      <div className="react-photo-cropper">（暂时只支持右边及底边调整裁剪框）
         <div className='cropper'>
           <label htmlFor='cropper-label-input' className='cropper-label'>
             <PlusOutlined className='cropper-label-icon' />
