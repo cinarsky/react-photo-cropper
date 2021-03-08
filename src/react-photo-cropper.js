@@ -6,8 +6,9 @@ class ReactPhotoCropper extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      width: props.width,
-      height: props.height,
+      ratio: props.ratio,
+      // width: props.width,
+      // height: props.height,
       imgMinWidth: props.imgMinWidth || 80,
       imgMinHeight: props.imgMinHeight || 90,
       resetInput: true,
@@ -68,7 +69,7 @@ class ReactPhotoCropper extends Component {
           this.cropperBoxRef.style.height = `${imgMinHeight + temp}px`
           console.log(123, this.cropperBoxRef.clientHeight, this.cropperBoxRef.style.height, imgMinHeight);
         }
-      } 
+      }
       // if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
       //   this.cropperBoxRef.style.height = `${imgMinHeight+1}px`
       // }
@@ -205,87 +206,6 @@ class ReactPhotoCropper extends Component {
       } else {
         this.cropperBoxRef.style.width = `${distanceX}px`
       }
-    } else if (mode === 'right-top') {
-      //
-      return
-      if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
-
-        this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
-      } else {
-        this.cropperBoxRef.style.width = `${distanceX}px`
-      }
-      if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
-
-        this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
-      } else {
-        this.cropperBoxRef.style.top = `${top + distanceY}px`
-        this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
-      }
-    } else if (mode === 'bottom') {
-      if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
-        this.cropperContentRef.removeEventListener('mousemove', this.handleContentMouseMove)
-        let temp = 1
-        while (this.cropperBoxRef.clientHeight <= imgMinHeight + 1) {
-          temp++
-          this.cropperBoxRef.style.height = `${imgMinHeight + temp}px`
-          console.log(123, this.cropperBoxRef.clientHeight, this.cropperBoxRef.style.height, imgMinHeight);
-        }
-      } else {
-        this.cropperBoxRef.style.height = `${distanceY}px`
-      }
-    } else if (mode === 'left-bottom') {
-      //
-      return
-      if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
-
-        this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
-      } else {
-        this.cropperBoxRef.style.left = `${left + distanceX}px`
-        this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
-      }
-      if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
-
-        this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
-      } else {
-        this.cropperBoxRef.style.height = `${distanceY}px`
-      }
-    } else if (mode === 'left') {
-      //
-      return
-      if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
-
-        this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
-      } else {
-        this.cropperBoxRef.style.left = `${left + distanceX}px`
-        this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
-      }
-    } else if (mode === 'left-top') {
-      //
-      return
-      if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
-
-        this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
-      } else {
-        this.cropperBoxRef.style.top = `${top + distanceY}px`
-        this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
-      }
-      if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
-
-        this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
-      } else {
-        this.cropperBoxRef.style.left = `${left + distanceX}px`
-        this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
-      }
-    } else if (mode === 'top') {
-      //
-      return
-      if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
-
-        this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
-      } else {
-        this.cropperBoxRef.style.top = `${top + distanceY}px`
-        this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
-      }
     }
 
 
@@ -339,7 +259,7 @@ class ReactPhotoCropper extends Component {
     this.cropperContentRef.removeEventListener('mouseup', this.handleMouseUp)
   }
 
-  closeDialog = () => {
+  cropperOk = () => {
     this.cropperContentRef.removeEventListener('mousedown', this.handleContentMouseDown)
     this.cropperBoxContentRef.removeEventListener('mousedown', this.handleMouseDown)
     const originX = this.cropperBoxContentRef.getBoundingClientRect().left - this.cropperContentRef.getBoundingClientRect().left
@@ -370,6 +290,12 @@ class ReactPhotoCropper extends Component {
     })
   }
 
+  closeDialog = () => {
+    this.setState({
+      visible: false
+    })
+  }
+
   render() {
     const { resetInput, visible, currentImgUrl, width, height } = this.state
     return (
@@ -385,7 +311,8 @@ class ReactPhotoCropper extends Component {
           visible={visible}
           mask
           className="react-photo-cropper-dialog"
-          onOk={this.closeDialog}
+          onOk={this.cropperOk}
+          onCancel={this.closeDialog}
         >
           <div
             id="react-photo-cropper-dialog-content"
@@ -428,46 +355,3 @@ class ReactPhotoCropper extends Component {
 }
 export default ReactPhotoCropper;
 
-
-// console.log(e.offsetX, e.offsetY);
-// let left = Number((this.cropperBoxRef.style.left || '0px').split('px')[0])
-// let top = Number((this.cropperBoxRef.style.top || '0px').split('px')[0])
-// let width = e.offsetX 
-// let height = e.offsetY 
-// if (e.target === this.cropperContentRef) {
-//   width = e.offsetX - left
-//   height = e.offsetY - top
-// }
-// if (e.layerX > edge && e.layerX < this.cropperBoxRef.clientWidth - edge && e.layerY < edge) {
-//   console.log('上');
-// } else if (e.layerX <= edge && e.layerY <= edge) {
-//   console.log('左上');
-// } else if (e.layerX <= edge && e.layerY <= this.cropperBoxRef.clientHeight - edge) {
-//   console.log('左');
-// } else if (e.layerX <= edge && e.layerY > this.cropperBoxRef.clientHeight - edge) {
-//   console.log('左下', e.offsetY,);
-
-//   this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - e.offsetX}px`
-//   this.cropperBoxRef.style.height = `${e.offsetY}px`
-//   this.cropperBoxRef.style.left = `${left + e.offsetX}px`
-
-// } 
-// else 
-// if (e.layerX > edge && e.layerX <= this.cropperBoxRef.clientWidth - edge && e.layerY > this.cropperBoxRef.clientHeight / 2) {
-//   console.log('下');
-//   this.cropperBoxRef.style.height = `${height}px`
-// } else if (e.layerX > this.cropperBoxRef.clientWidth - edge && e.layerY > this.cropperBoxRef.clientHeight - edge) {
-//   console.log('右下');
-//   console.log(e, width, height);
-//   this.cropperBoxRef.style.width = `${width}px`
-//   this.cropperBoxRef.style.height = `${height}px`
-// } 
-// // else if (e.layerX > this.cropperBoxRef.clientWidth - edge && e.layerY <= edge) {
-// //   console.log('右上');
-// // }
-//  else if (e.layerX > this.cropperBoxRef.clientWidth / 2 && e.layerY > edge && e.layerY <= this.cropperBoxRef.clientHeight - edge) {
-//   console.log('右');
-//   this.cropperBoxRef.style.width = `${width}px`
-// } else {
-//   console.log('其他');
-// }

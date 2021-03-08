@@ -1,0 +1,83 @@
+    //  //209
+    //  else if (mode === 'right-top') {
+    //   //
+    //   return
+    //   if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
+
+    //     this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.width = `${distanceX}px`
+    //   }
+    //   if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
+
+    //     this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.top = `${top + distanceY}px`
+    //     this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
+    //   }
+    // } else if (mode === 'bottom') {
+    //   if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
+    //     this.cropperContentRef.removeEventListener('mousemove', this.handleContentMouseMove)
+    //     let temp = 1
+    //     while (this.cropperBoxRef.clientHeight <= imgMinHeight + 1) {
+    //       temp++
+    //       this.cropperBoxRef.style.height = `${imgMinHeight + temp}px`
+    //       console.log(123, this.cropperBoxRef.clientHeight, this.cropperBoxRef.style.height, imgMinHeight);
+    //     }
+    //   } else {
+    //     this.cropperBoxRef.style.height = `${distanceY}px`
+    //   }
+    // } else if (mode === 'left-bottom') {
+    //   //
+    //   return
+    //   if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
+
+    //     this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.left = `${left + distanceX}px`
+    //     this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
+    //   }
+    //   if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
+
+    //     this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.height = `${distanceY}px`
+    //   }
+    // } else if (mode === 'left') {
+    //   //
+    //   return
+    //   if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
+
+    //     this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.left = `${left + distanceX}px`
+    //     this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
+    //   }
+    // } else if (mode === 'left-top') {
+    //   //
+    //   return
+    //   if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
+
+    //     this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.top = `${top + distanceY}px`
+    //     this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
+    //   }
+    //   if (this.cropperBoxRef.clientWidth <= imgMinWidth) {
+
+    //     this.cropperBoxRef.style.width = `${imgMinWidth + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.left = `${left + distanceX}px`
+    //     this.cropperBoxRef.style.width = `${this.cropperBoxRef.clientWidth - distanceX}px`
+    //   }
+    // } else if (mode === 'top') {
+    //   //
+    //   return
+    //   if (this.cropperBoxRef.clientHeight <= imgMinHeight) {
+
+    //     this.cropperBoxRef.style.height = `${imgMinHeight + 1}px`
+    //   } else {
+    //     this.cropperBoxRef.style.top = `${top + distanceY}px`
+    //     this.cropperBoxRef.style.height = `${this.cropperBoxRef.clientHeight - distanceY}px`
+    //   }
+    // }
